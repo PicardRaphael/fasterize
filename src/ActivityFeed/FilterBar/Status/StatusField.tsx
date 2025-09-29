@@ -6,6 +6,8 @@ import { memo, useEffect, useRef } from 'react';
 import InfoTooltip from '../../../shared/components/InfoTooltip';
 import { Box } from '@mui/material';
 import { useQueryState, parseAsArrayOf, parseAsString } from 'nuqs';
+import { statusLabel } from '../../../shared/utils/status';
+import type { ActivityStatus } from '../../../shared/types/activity.type';
 
 export const StatusField = () => {
   const { values, setStatuses, options } = useStatusFilterControl();
@@ -47,6 +49,7 @@ export const StatusField = () => {
         multiple
         options={options}
         value={values}
+        getOptionLabel={(opt) => statusLabel[opt as ActivityStatus] ?? String(opt)}
         onChange={(_event, nextValue) => {
           if (JSON.stringify(values) !== JSON.stringify(nextValue)) {
             setStatuses(nextValue);
