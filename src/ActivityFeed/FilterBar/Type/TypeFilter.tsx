@@ -67,7 +67,7 @@ export const TypeFilter = () => {
                 values.length > 0 ? (
                   <Box
                     sx={{
-                      ml: 1,
+                      ml: { xs: 0, sm: 1 },
                       color: 'text.secondary',
                       fontSize: '0.875rem',
                     }}

@@ -16,9 +16,7 @@ export default function PaginationBar() {
         onRowsPerPageChange={(e) => setPerPage(parseInt(e.target.value, 10))}
         rowsPerPageOptions={[15, 25, 50, 100]}
         labelRowsPerPage='Items per page:'
-        labelDisplayedRows={({ from, to, count }) =>
-          `${from}-${to} of ${count}`
-        }
+        labelDisplayedRows={({ from, to, count }) => `${from}-${to} of ${count}`}
         getItemAriaLabel={(type) => {
           switch (type) {
             case 'first':

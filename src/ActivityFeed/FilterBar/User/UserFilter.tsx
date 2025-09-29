@@ -30,7 +30,8 @@ export const UserFilter = () => {
       return;
     }
     const next = usersQs ?? [];
-    if (JSON.stringify(values) !== JSON.stringify(next)) setUsers(next as number[]);
+    if (JSON.stringify(values) !== JSON.stringify(next))
+      setUsers(next as number[]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usersQs]);
 
@@ -91,7 +92,7 @@ export const UserFilter = () => {
         renderInput={(params) => (
           <TextField
             {...params}
-            label='Status'
+            label='User'
             InputProps={{
               ...params.InputProps,
               startAdornment:

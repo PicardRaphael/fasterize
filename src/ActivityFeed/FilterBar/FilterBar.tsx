@@ -16,30 +16,33 @@ export const FilterBar = () => {
     <Box component='section' sx={{ width: '100%' }}>
       {/* Search removed */}
 
-      {/* List of filters */}
+      {/* Filters row: keep desktop layout; allow wrap only on small screens */}
       <Stack
         direction='row'
         spacing={2}
         sx={{
           width: '100%',
-          justifyContent: 'space-between',
           alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: { xs: 'wrap', md: 'nowrap' },
+          rowGap: 2,
         }}
+        useFlexGap
       >
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ flex: 1, minWidth: { xs: '100%', sm: '48%', md: 0 } }}>
           <DateRangeField />
         </Box>
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ flex: 1, minWidth: { xs: '100%', sm: '48%', md: 0 } }}>
           <StatusField />
         </Box>
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ flex: 1, minWidth: { xs: '100%', sm: '48%', md: 0 } }}>
           <TypeFilter />
         </Box>
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ flex: 1, minWidth: { xs: '100%', sm: '48%', md: 0 } }}>
           <UserFilter />
         </Box>
         {showClear && (
-          <Box>
+          <Box sx={{ ml: { md: 1 } }}>
             <Button
               variant='text'
               color='inherit'
@@ -51,6 +54,7 @@ export const FilterBar = () => {
           </Box>
         )}
       </Stack>
+
       <Box component='div' mt={1}>
         {/* Summary of active filters */}
         <ActiveFiltersChips />

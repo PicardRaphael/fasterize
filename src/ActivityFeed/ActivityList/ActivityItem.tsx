@@ -11,6 +11,7 @@ import type {
 } from '../../shared/types/activity.type';
 import { statusLabel } from '../../shared/utils/status';
 import useActivityIcon from '../hooks/useActivityIcon';
+import { Box } from '@mui/material';
 
 const statusColor: Record<ActivityStatus, 'success' | 'error' | 'warning'> = {
   COMPLETED: 'success',
@@ -41,7 +42,7 @@ export const ActivityItem = ({ activity }: ActivityItemProps) => {
   );
 
   return (
-    <div className='grid gap-4 border-b border-slate-100 px-3 py-4 text-slate-700 last:border-b-0 lg:grid-cols-[160px_120px_1fr_200px_32px] lg:items-center lg:gap-6'>
+    <Box className='grid gap-4 border-b border-slate-100 px-3 py-4 text-slate-700 last:border-b-0 lg:grid-cols-[160px_120px_1fr_200px] lg:items-center lg:gap-6'>
       <Typography variant='body2' className='text-sm text-slate-500'>
         {formattedDate}
       </Typography>
@@ -82,7 +83,8 @@ export const ActivityItem = ({ activity }: ActivityItemProps) => {
         </Stack>
       </Stack>
 
-      <div className='flex items-center justify-start gap-3 lg:justify-end'>
+      {/* User block (4th column): on mobile, keep chevron with user; on desktop, user only */}
+      <Box className='flex items-center justify-start gap-3 lg:justify-end'>
         <Avatar className='h-9 w-9 bg-[#0b2840] text-white'>
           {activity.user.name.charAt(0).toUpperCase()}
         </Avatar>
@@ -92,16 +94,16 @@ export const ActivityItem = ({ activity }: ActivityItemProps) => {
         >
           {activity.user.name}
         </Typography>
-      </div>
-
-      <IconButton
-        size='small'
-        aria-label='Show details'
-        className='justify-self-end text-slate-300 transition hover:text-slate-500'
-      >
-        <KeyboardArrowDownRoundedIcon />
-      </IconButton>
-    </div>
+        {/* Mobile/tablet chevron: visible below lg to stay on the same line as user */}
+        <IconButton
+          size='small'
+          aria-label='Show details'
+          className=' text-slate-300 transition hover:text-slate-500'
+        >
+          <KeyboardArrowDownRoundedIcon />
+        </IconButton>
+      </Box>
+    </Box>
   );
 };
 
