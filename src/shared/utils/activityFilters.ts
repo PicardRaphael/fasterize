@@ -1,81 +1,69 @@
-import type {
-  Activity,
-  ActivityStatus,
-  ActivityUser,
-  DateRangeValue,
-} from '../types/activity.type';
+import type { Activity, ActivityStatus } from '../types/activity.type';
 
-// Fonction simple: filtre et pagine les activités.
+/**
+ * getActivitiesPage
+ *
+ * Purpose
+ * - Apply filters (status, type, user, date) and then extract the requested page.
+ * - Optimize for readability and predictable UX.
+ *
+ * Principles
+ * - “Filter then slice”: filter the full array first, then take the sub‑array for the page.
+ *   For our local demo dataset (~25+ items), this is clearer than a one‑pass implementation
+ *   and perfectly fine performance‑wise.
+ * - Inclusive calendar range: from start‑of‑day (00:00:00) to end‑of‑day (23:59:59.999)
+ *   in local time. This matches the common expectation that “12 to 14” includes the whole 14th.
+ * - Use Sets for multi‑select filters: O(1) membership checks and simple code.
+ *
+ * Notes
+ * - `createdAt` timestamps are ISO (UTC). Converting to local Date and clamping to local
+ *   day boundaries yields a result aligned with the date pickers’ presentation.
+ * - If the dataset grows significantly, we can switch back to a one‑pass approach without
+ *   changing the external behavior.
+ */
 export const getActivitiesPage = (
   activities: Activity[],
   filters: {
     statuses: ActivityStatus[];
     types: string[];
     users: number[];
-    dateRange: DateRangeValue;
+    dateRange: { start: Date | null; end: Date | null };
   },
   pageIndex: number,
   pageSize: number
 ) => {
+  // 1) Prepare sets for fast and readable membership checks.
   const statusSet = new Set<ActivityStatus>(filters.statuses);
   const typeSet = new Set<string>(filters.types);
   const userSet = new Set<number>(filters.users);
 
-  const start = filters.dateRange.start
-    ? new Date(filters.dateRange.start)
+  // 2) Compute local start/end of day for an inclusive range.
+  const startMs = filters.dateRange.start
+    ? new Date(filters.dateRange.start).setHours(0, 0, 0, 0)
     : null;
-  if (start) start.setHours(0, 0, 0, 0);
-  const end = filters.dateRange.end ? new Date(filters.dateRange.end) : null;
-  if (end) end.setHours(23, 59, 59, 999);
+  const endMs = filters.dateRange.end
+    ? new Date(filters.dateRange.end).setHours(23, 59, 59, 999)
+    : null;
 
-  const firstIndex = pageIndex * pageSize;
-  const lastIndexExclusive = firstIndex + pageSize;
-
-  const page: Activity[] = [];
-  let total = 0;
-
-  for (let i = 0; i < activities.length; i++) {
-    const a = activities[i];
-    if (statusSet.size && !statusSet.has(a.status)) continue;
-    if (typeSet.size && !typeSet.has(a.type)) continue;
-    if (userSet.size && !userSet.has(a.userId)) continue;
-
-    if (start || end) {
-      const createdAt = new Date(a.createdAt);
-      if (start && createdAt < start) continue;
-      if (end && createdAt > end) continue;
+  // 3) Apply active filters.
+  const filtered = activities.filter((a) => {
+    if (statusSet.size && !statusSet.has(a.status)) return false;
+    if (typeSet.size && !typeSet.has(a.type)) return false;
+    if (userSet.size && !userSet.has(a.userId)) return false;
+    if (startMs !== null || endMs !== null) {
+      const createdMs = new Date(a.createdAt).getTime();
+      if (startMs !== null && createdMs < startMs) return false;
+      if (endMs !== null && createdMs > endMs) return false;
     }
+    return true;
+  });
 
-    if (total >= firstIndex && total < lastIndexExclusive) page.push(a);
-    total++;
-  }
+  // 4) Count filtered total for the UI/pagination.
+  const totalCount = filtered.length;
 
-  return { items: page, totalCount: total };
-};
+  // 5) Slice the requested page.
+  const start = Math.max(0, pageIndex) * Math.max(1, pageSize);
+  const items = filtered.slice(start, start + pageSize);
 
-// Collect options once from a dataset
-export const collectOptions = (activities: Activity[]) => {
-  const statusSet = new Set<ActivityStatus>();
-  const typeSet = new Set<string>();
-  const userMap = new Map<number, ActivityUser>();
-
-  for (let i = 0; i < activities.length; i++) {
-    const a = activities[i];
-    statusSet.add(a.status);
-    typeSet.add(a.type);
-    if (!userMap.has(a.userId)) userMap.set(a.userId, a.user);
-  }
-
-  const statusOptions = Array.from(statusSet);
-  const typeOptions = Array.from(typeSet).sort();
-  const userOptions = Array.from(userMap.values()).sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
-
-  return { statusOptions, typeOptions, userOptions };
-};
-
-export default {
-  getActivitiesPage,
-  collectOptions,
+  return { items, totalCount };
 };

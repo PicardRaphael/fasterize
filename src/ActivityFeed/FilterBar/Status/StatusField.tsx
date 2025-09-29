@@ -11,6 +11,8 @@ import type { ActivityStatus } from '../../../shared/types/activity.type';
 
 export const StatusField = () => {
   const { values, setStatuses, options } = useStatusFilterControl();
+  // Sync query param `status` <-> store using nuqs.
+  // We keep Zustand as the UI source of truth, and update the URL only when values actually change.
   const [statusQs, setStatusQs] = useQueryState(
     'status',
     parseAsArrayOf(parseAsString)
@@ -18,6 +20,8 @@ export const StatusField = () => {
   const settingUrl = useRef(false);
 
   // URL -> Store
+  // Apply initial/pasted URL or browser navigation back/forward.
+  // If we just updated the URL ourselves (settingUrl), skip to prevent a feedback loop.
   useEffect(() => {
     if (settingUrl.current) {
       settingUrl.current = false;
@@ -30,6 +34,8 @@ export const StatusField = () => {
   }, [statusQs]);
 
   // Store -> URL (covers chips delete & global reset)
+  // Whenever the store values change (UI actions), push them to the URL.
+  // Use a guard (settingUrl) to ignore the next URL->Store turn.
   useEffect(() => {
     const cur = (statusQs ?? []) as string[];
     const next = values as string[];
@@ -49,11 +55,14 @@ export const StatusField = () => {
         multiple
         options={options}
         value={values}
+        // Human‑friendly labels instead of raw enum values in the dropdown.
         getOptionLabel={(opt) => statusLabel[opt as ActivityStatus] ?? String(opt)}
         onChange={(_event, nextValue) => {
+          // Only write to the store if the selection really changed.
           if (JSON.stringify(values) !== JSON.stringify(nextValue)) {
             setStatuses(nextValue);
           }
+          // Keep the URL in sync for shareability.
           setStatusQs(nextValue.length ? nextValue : null);
         }}
         disableCloseOnSelect

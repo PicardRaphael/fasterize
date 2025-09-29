@@ -14,6 +14,7 @@ export const DateRangeField = () => {
   const { value, setDateRange } = useDateRangeFilter();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
+  // Sync `from` / `to` dates in the query with the store (bidirectional).
   const [fromQs, setFromQs] = useQueryState('from', parseAsIsoDateTime);
   const [toQs, setToQs] = useQueryState('to', parseAsIsoDateTime);
   const settingUrl = useRef(false);
@@ -24,6 +25,7 @@ export const DateRangeField = () => {
   };
 
   // Store -> URL (value change comes from DateRangePanel via setDateRange)
+  // Guard against the initial paste case: if URL already has from/to and isn't applied yet, do not override it.
   useEffect(() => {
     // On first load, if URL already has from/to, do not override it with defaults
     if (!urlApplied.current && (fromQs || toQs)) {
@@ -45,7 +47,7 @@ export const DateRangeField = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value.start, value.end]);
 
-  // URL -> Store (initial paste / browser nav)
+  // URL -> Store (initial paste / browser nav) with loop guard
   useEffect(() => {
     if (settingUrl.current) {
       settingUrl.current = false;

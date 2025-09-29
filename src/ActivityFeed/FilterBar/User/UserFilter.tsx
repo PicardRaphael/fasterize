@@ -12,6 +12,7 @@ import { useQueryState, parseAsArrayOf, parseAsInteger } from 'nuqs';
 
 export const UserFilter = () => {
   const { values, setUsers, options } = useUserFilterControl();
+  // Sync query param `user` (array of user IDs) <-> store.
   const [usersQs, setUsersQs] = useQueryState(
     'user',
     parseAsArrayOf(parseAsInteger)
@@ -22,6 +23,7 @@ export const UserFilter = () => {
     [options, values]
   );
 
+  // URL -> Store with loop guard
   useEffect(() => {
     if (settingUrl.current) {
       settingUrl.current = false;
@@ -32,7 +34,7 @@ export const UserFilter = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usersQs]);
 
-  // Store -> URL (chips delete & reset)
+  // Store -> URL (chips delete & reset) with loop guard
   useEffect(() => {
     const cur = usersQs ?? [];
     const next = values;
@@ -53,8 +55,11 @@ export const UserFilter = () => {
         options={options}
         value={selectedUsers}
         onChange={(_event, newValue) => {
+          // Map selected user objects to their IDs.
           const ids = newValue.map((u) => u.id);
+          // Only update state if real change.
           if (JSON.stringify(values) !== JSON.stringify(ids)) setUsers(ids);
+          // Keep URL in sync.
           setUsersQs(ids.length ? ids : null);
         }}
         isOptionEqualToValue={(option, value) => option.id === value.id}

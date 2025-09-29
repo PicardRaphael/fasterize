@@ -1,3 +1,6 @@
+// React Context wrapper around the vanilla Zustand store.
+// Pattern: create the store once (useRef) and expose a typed selector hook
+// with useStoreWithEqualityFn + shallow to minimize re-renders.
 import { createContext, useContext, useRef, type ReactNode } from 'react';
 import type { StoreApi } from 'zustand/vanilla';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
@@ -28,6 +31,8 @@ export function useActivityFeedStore<T>(
     throw new Error(
       'useActivityFeedStore must be used within ActivityFeedProvider'
     );
+  // Consumers should pass `shallow` when selecting multiple fields to avoid re-rendering
+  // when the slice is referentially stable.
   return useStoreWithEqualityFn(store, selector, equalityFn);
 }
 

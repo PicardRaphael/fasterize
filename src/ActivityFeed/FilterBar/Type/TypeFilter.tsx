@@ -9,12 +9,14 @@ import { useQueryState, parseAsArrayOf, parseAsString } from 'nuqs';
 
 export const TypeFilter = () => {
   const { values, setTypes, options } = useTypeFilterControl();
+  // Sync query param `type` <-> store with nuqs.
   const [typesQs, setTypesQs] = useQueryState(
     'type',
     parseAsArrayOf(parseAsString)
   );
   const settingUrl = useRef(false);
 
+  // URL -> Store with loop guard
   useEffect(() => {
     if (settingUrl.current) {
       settingUrl.current = false;
@@ -25,7 +27,7 @@ export const TypeFilter = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [typesQs]);
 
-  // Store -> URL (chips delete & reset)
+  // Store -> URL (chips delete & reset) with loop guard
   useEffect(() => {
     const cur = typesQs ?? [];
     const next = values;
@@ -46,7 +48,9 @@ export const TypeFilter = () => {
         options={options}
         value={values}
         onChange={(_event, newValue) => {
+          // Only update state if the selection actually changed.
           if (JSON.stringify(values) !== JSON.stringify(newValue)) setTypes(newValue);
+          // Keep URL in sync for shareability.
           setTypesQs(newValue.length ? newValue : null);
         }}
         disableCloseOnSelect
