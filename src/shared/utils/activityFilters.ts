@@ -28,6 +28,7 @@ export const getActivitiesPage = (
     types: string[];
     users: number[];
     dateRange: { start: Date | null; end: Date | null };
+    search: string;
   },
   pageIndex: number,
   pageSize: number
@@ -46,6 +47,9 @@ export const getActivitiesPage = (
     : null;
 
   // 3) Apply active filters.
+  const q = (filters.search ?? '').trim().toLowerCase();
+  const hasQuery = q.length > 0;
+
   const filtered = activities.filter((a) => {
     if (statusSet.size && !statusSet.has(a.status)) return false;
     if (typeSet.size && !typeSet.has(a.type)) return false;
@@ -54,6 +58,26 @@ export const getActivitiesPage = (
       const createdMs = new Date(a.createdAt).getTime();
       if (startMs !== null && createdMs < startMs) return false;
       if (endMs !== null && createdMs > endMs) return false;
+    }
+    if (hasQuery) {
+      const haystacks: Array<unknown> = [
+        a.subject,
+        a.description,
+        a.supportTicket,
+        a.requestId,
+        a.applicationId,
+        a.type,
+        a.user?.name,
+      ];
+      let matched = false;
+      for (let i = 0; i < haystacks.length; i++) {
+        const v = haystacks[i];
+        if (typeof v === 'string' && v.toLowerCase().includes(q)) {
+          matched = true;
+          break;
+        }
+      }
+      if (!matched) return false;
     }
     return true;
   });

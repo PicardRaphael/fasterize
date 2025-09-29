@@ -10,7 +10,7 @@ export const useFilterSummary = () =>
         state.filters.users.length +
         Number(
           Boolean(state.filters.dateRange.start || state.filters.dateRange.end)
-        ),
+        ) + Number(Boolean(state.filters.search)),
       clearFilters: state.clearFilters,
     }),
     shallow

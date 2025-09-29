@@ -19,6 +19,7 @@ export const createActivityFeedStore = (): StoreApi<ActivityFeedState> => {
       types: [],
       users: [],
       dateRange: { start: null, end: null },
+      search: '',
     },
     pagination: { page: 0, perPage: 15 },
     setStatuses: (values) =>
@@ -52,6 +53,12 @@ export const createActivityFeedStore = (): StoreApi<ActivityFeedState> => {
           return state;
         return { filters: { ...state.filters, dateRange: nextRange } };
       }),
+    setSearch: (q) =>
+      set((state) =>
+        state.filters.search === q
+          ? state
+          : { filters: { ...state.filters, search: q } }
+      ),
     clearFilters: () =>
       set((state) => ({
         filters: {
@@ -59,6 +66,7 @@ export const createActivityFeedStore = (): StoreApi<ActivityFeedState> => {
           types: [],
           users: [],
           dateRange: { start: null, end: null },
+          search: '',
         },
         pagination: { ...state.pagination, page: 0 },
       })),

@@ -15,10 +15,12 @@ const ActiveFiltersChips = () => {
     users,
     userOptions,
     dateRange,
+    search,
     setStatuses,
     setTypes,
     setUsers,
     setDateRange,
+    setSearch,
     activeCount,
   } = useFilterChips();
 
@@ -32,6 +34,9 @@ const ActiveFiltersChips = () => {
 
   return (
     <div className='flex flex-wrap items-center gap-2'>
+      {search ? (
+        <Chip label={`Search: ${search}`} onDelete={() => setSearch('')} />
+      ) : null}
       {dateRange.start || dateRange.end ? (
         <Chip
           label={formatDateRange(dateRange)}

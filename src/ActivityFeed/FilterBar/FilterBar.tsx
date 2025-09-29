@@ -7,6 +7,7 @@ import UserFilter from './User/UserFilter';
 import ActiveFiltersChips from './ActiveFiltersChips';
 import { Box, Stack } from '@mui/material';
 import useFilterSummary from '../hooks/filters/useFilterSummary';
+import SearchField from './Search/SearchField';
 
 export const FilterBar = () => {
   const { clearFilters, activeCount } = useFilterSummary();
@@ -14,7 +15,10 @@ export const FilterBar = () => {
 
   return (
     <Box component='section' sx={{ width: '100%' }}>
-      {/* Search removed */}
+      {/* Search */}
+      <Box mb={2}>
+        <SearchField />
+      </Box>
 
       {/* Filters row: keep desktop layout; allow wrap only on small screens */}
       <Stack

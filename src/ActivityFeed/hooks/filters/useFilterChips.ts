@@ -8,18 +8,20 @@ export const useFilterChips = () =>
       types: state.filters.types,
       users: state.filters.users,
       dateRange: state.filters.dateRange,
+      search: state.filters.search,
       userOptions: state.userOptions,
       setStatuses: state.setStatuses,
       setTypes: state.setTypes,
       setUsers: state.setUsers,
       setDateRange: state.setDateRange,
+      setSearch: state.setSearch,
       activeCount:
         state.filters.statuses.length +
         state.filters.types.length +
         state.filters.users.length +
         Number(
           Boolean(state.filters.dateRange.start || state.filters.dateRange.end)
-        ),
+        ) + Number(Boolean(state.filters.search)),
     }),
     shallow
   );

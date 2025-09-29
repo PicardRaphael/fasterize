@@ -10,6 +10,7 @@ export interface ActivityFilterState {
   types: string[];
   users: number[];
   dateRange: DateRangeValue;
+  search: string;
 }
 
 export interface PaginationState {
@@ -28,6 +29,7 @@ export interface ActivityFeedState {
   setTypes: (values: string[]) => void;
   setUsers: (values: number[]) => void;
   setDateRange: (range: DateRangeValue) => void;
+  setSearch: (q: string) => void;
   clearFilters: () => void;
   setPage: (page: number) => void;
   setPerPage: (size: number) => void;
