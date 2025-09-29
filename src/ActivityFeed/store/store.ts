@@ -1,0 +1,78 @@
+import { createStore, type StoreApi } from 'zustand/vanilla';
+import type { DateRangeValue } from '../../shared/types/activity.type';
+import type { ActivityFeedState } from '../types/types';
+import { normalizeDate, sameDate } from '../../shared/utils/date';
+import { haveSameUsers } from '../../shared/utils/user';
+import { normalizeActivities } from '../../shared/utils/activities';
+
+export const createActivityFeedStore = (): StoreApi<ActivityFeedState> => {
+  const { activities, statusOptions, typeOptions, userOptions } =
+    normalizeActivities();
+
+  return createStore<ActivityFeedState>((set) => ({
+    activities,
+    statusOptions,
+    typeOptions,
+    userOptions,
+    filters: {
+      statuses: [],
+      types: [],
+      users: [],
+      dateRange: { start: null, end: null },
+    },
+    pagination: { page: 0, perPage: 15 },
+    setStatuses: (values) =>
+      set((state) =>
+        haveSameUsers(state.filters.statuses, values)
+          ? state
+          : { filters: { ...state.filters, statuses: values.slice() } }
+      ),
+    setTypes: (values) =>
+      set((state) =>
+        haveSameUsers(state.filters.types, values)
+          ? state
+          : { filters: { ...state.filters, types: values.slice() } }
+      ),
+    setUsers: (values) =>
+      set((state) =>
+        haveSameUsers(state.filters.users, values)
+          ? state
+          : { filters: { ...state.filters, users: values.slice() } }
+      ),
+    setDateRange: (range) =>
+      set((state) => {
+        const nextRange: DateRangeValue = {
+          start: normalizeDate(range.start),
+          end: normalizeDate(range.end),
+        };
+        if (
+          sameDate(state.filters.dateRange.start, nextRange.start) &&
+          sameDate(state.filters.dateRange.end, nextRange.end)
+        )
+          return state;
+        return { filters: { ...state.filters, dateRange: nextRange } };
+      }),
+    clearFilters: () =>
+      set((state) => ({
+        filters: {
+          statuses: [],
+          types: [],
+          users: [],
+          dateRange: { start: null, end: null },
+        },
+        pagination: { ...state.pagination, page: 0 },
+      })),
+    setPage: (page) =>
+      set((state) =>
+        state.pagination.page === page
+          ? state
+          : { pagination: { ...state.pagination, page } }
+      ),
+    setPerPage: (size) =>
+      set((state) =>
+        state.pagination.perPage === size
+          ? state
+          : { pagination: { page: 0, perPage: size } }
+      ),
+  }));
+};
