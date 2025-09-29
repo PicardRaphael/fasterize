@@ -15,7 +15,7 @@ export default function SearchField() {
     shallow
   );
 
-  const [qParam, setQParam] = useQueryState('search', parseAsString);
+  const [qParam, setQParam] = useQueryState('q', parseAsString);
   const [local, setLocal] = useState(search);
   const settingUrl = useRef(false);
 
@@ -61,6 +61,7 @@ export default function SearchField() {
       sx={{
         color: 'text.secondary',
       }}
+      inputProps={{ 'aria-label': 'Search activities' }}
       InputProps={{
         startAdornment: (
           <InputAdornment position='start'>

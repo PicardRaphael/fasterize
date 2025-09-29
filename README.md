@@ -2,6 +2,10 @@
 
 Un flux d’activité filtrable (statut, type, utilisateur, plage de dates) construit avec React + Vite.
 
+## Démo
+
+![Demo](./assets/demo.gif)
+
 ## Installation
 
 ```bash
