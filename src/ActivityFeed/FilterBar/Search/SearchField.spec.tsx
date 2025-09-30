@@ -1,3 +1,4 @@
+import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -10,7 +11,8 @@ const renderWithProvider = (
   adapterProps?: Parameters<typeof withNuqsTestingAdapter>[0]
 ) =>
   render(<ActivityFeedProvider>{ui}</ActivityFeedProvider>, {
-    wrapper: withNuqsTestingAdapter(adapterProps),
+    wrapper: ({ children }) =>
+      withNuqsTestingAdapter(adapterProps)({ children }),
   });
 
 describe('SearchField — URL sync', () => {
@@ -29,7 +31,9 @@ describe('SearchField — URL sync', () => {
 
   it('applies initial ?q=… from the URL to the input/store', () => {
     renderWithProvider(<SearchField />, { searchParams: '?q=cache' });
-    const input = screen.getByLabelText(/search activities/i) as HTMLInputElement;
+    const input = screen.getByLabelText(
+      /search activities/i
+    ) as HTMLInputElement;
     expect(input.value).toBe('cache');
   });
 
@@ -39,7 +43,9 @@ describe('SearchField — URL sync', () => {
     renderWithProvider(<SearchField />, {
       onUrlUpdate: (e) => updates.push(e.queryString),
     });
-    const input = screen.getByLabelText(/search activities/i) as HTMLInputElement;
+    const input = screen.getByLabelText(
+      /search activities/i
+    ) as HTMLInputElement;
 
     await u.type(input, 'dns');
     // Debounce delay + adapter rate limiting

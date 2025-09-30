@@ -44,6 +44,7 @@ export interface ActivityFilters {
   types: string[];
   users: number[];
   dateRange: DateRangeValue;
+  search: string;
 }
 
 export interface PaginatedResult<T> {

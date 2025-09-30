@@ -1,19 +1,12 @@
 import type {
   Activity,
+  ActivityFilters,
   ActivityStatus,
   ActivityUser,
   DateRangeValue,
 } from '../../shared/types/activity.type';
 
-export interface ActivityFilterState {
-  statuses: ActivityStatus[];
-  types: string[];
-  users: number[];
-  dateRange: DateRangeValue;
-  search: string;
-}
-
-export interface PaginationState {
+interface PaginationState {
   page: number;
   perPage: number;
 }
@@ -23,7 +16,7 @@ export interface ActivityFeedState {
   statusOptions: ActivityStatus[];
   typeOptions: string[];
   userOptions: ActivityUser[];
-  filters: ActivityFilterState;
+  filters: ActivityFilters;
   pagination: PaginationState;
   setStatuses: (values: ActivityStatus[]) => void;
   setTypes: (values: string[]) => void;
@@ -34,5 +27,3 @@ export interface ActivityFeedState {
   setPage: (page: number) => void;
   setPerPage: (size: number) => void;
 }
-
-export type { Activity, ActivityStatus, ActivityUser, DateRangeValue };

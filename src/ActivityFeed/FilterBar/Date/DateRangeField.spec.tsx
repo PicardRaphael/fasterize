@@ -1,12 +1,18 @@
+import React from 'react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { ActivityFeedProvider, useActivityFeedStore } from '../../store/context';
+import {
+  ActivityFeedProvider,
+  useActivityFeedStore,
+} from '../../store/context';
 import { withNuqsTestingAdapter } from 'nuqs/adapters/testing';
 import DateRangeField from './DateRangeField';
 import userEvent from '@testing-library/user-event';
 
 function Controls() {
-  const { setDateRange } = useActivityFeedStore((s) => ({ setDateRange: s.setDateRange }));
+  const { setDateRange } = useActivityFeedStore((s) => ({
+    setDateRange: s.setDateRange,
+  }));
   const setToday = () => {
     const d = new Date('2025-05-25T10:00:00Z');
     setDateRange({ start: d, end: d });
@@ -31,7 +37,9 @@ describe('DateRangeField — URL sync', () => {
     const from = '2025-05-01T00:00:00.000Z';
     const to = '2025-05-03T23:59:59.000Z';
     renderWithProvider(<DateRangeField />, {
-      searchParams: `?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`,
+      searchParams: `?from=${encodeURIComponent(from)}&to=${encodeURIComponent(
+        to
+      )}`,
     });
     // The visible text should no longer be the default "Calendar" placeholder
     expect(screen.queryByText(/calendar/i)).toBeNull();
