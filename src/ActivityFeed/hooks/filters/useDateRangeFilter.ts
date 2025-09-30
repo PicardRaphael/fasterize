@@ -1,13 +1,17 @@
 import { shallow } from 'zustand/shallow';
 import { useActivityFeedStore } from '../../store/context';
+import { useFilterTransition } from './useFilterTransition';
 
-export const useDateRangeFilter = () =>
-  useActivityFeedStore(
+export const useDateRangeFilter = () => {
+  const { value } = useActivityFeedStore(
     (state) => ({
       value: state.filters.dateRange,
-      setDateRange: state.setDateRange,
     }),
     shallow
   );
+  const { setDateRange } = useFilterTransition();
+
+  return { value, setDateRange };
+};
 
 export default useDateRangeFilter;

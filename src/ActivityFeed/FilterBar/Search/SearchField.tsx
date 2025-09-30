@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -8,12 +9,14 @@ import { useQueryState, parseAsString } from 'nuqs';
 
 import { useActivityFeedStore } from '../../store/context';
 import { shallow } from 'zustand/shallow';
+import { useFilterTransition } from '../../hooks/filters/useFilterTransition';
 
-export default function SearchField() {
-  const { search, setSearch } = useActivityFeedStore(
-    (s) => ({ search: s.filters.search, setSearch: s.setSearch }),
+export const SearchField = () => {
+  const { search } = useActivityFeedStore(
+    (s) => ({ search: s.filters.search }),
     shallow
   );
+  const { setSearch } = useFilterTransition();
 
   const [qParam, setQParam] = useQueryState('q', parseAsString);
   const [local, setLocal] = useState(search);
@@ -82,4 +85,5 @@ export default function SearchField() {
       }}
     />
   );
-}
+};
+export default memo(SearchField);
