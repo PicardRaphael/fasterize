@@ -1,4 +1,4 @@
-import { useMemo, type JSX } from 'react';
+import type { JSX } from 'react';
 import AutoAwesomeMosaicRoundedIcon from '@mui/icons-material/AutoAwesomeMosaicRounded';
 import BoltRoundedIcon from '@mui/icons-material/BoltRounded';
 import CachedRoundedIcon from '@mui/icons-material/CachedRounded';
@@ -32,13 +32,11 @@ const fallbackIcon = AutoAwesomeMosaicRoundedIcon;
 export type ActivityIconGetter = (type: string) => JSX.Element;
 
 export const useActivityIcon = (): ActivityIconGetter => {
-  return useMemo(() => {
-    return (type: string) => {
-      const upperType = type.toUpperCase();
-      const IconComponent = iconMap[upperType] ?? fallbackIcon;
-      return <IconComponent fontSize='small' />;
-    };
-  }, []);
+  return (type: string) => {
+    const upperType = type.toUpperCase();
+    const IconComponent = iconMap[upperType] ?? fallbackIcon;
+    return <IconComponent fontSize='small' />;
+  };
 };
 
 export default useActivityIcon;

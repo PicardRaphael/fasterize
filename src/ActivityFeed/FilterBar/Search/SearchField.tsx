@@ -1,10 +1,9 @@
-import { memo } from 'react';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { useQueryState, parseAsString } from 'nuqs';
 
 import { useActivityFeedStore } from '../../store/context';
@@ -52,7 +51,7 @@ export const SearchField = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [local]);
 
-  const clearable = useMemo(() => (local ?? '').length > 0, [local]);
+  const clearable = (local ?? '').length > 0;
 
   return (
     <TextField
@@ -86,4 +85,5 @@ export const SearchField = () => {
     />
   );
 };
+
 export default memo(SearchField);

@@ -3,7 +3,7 @@ import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import type {
   Activity,
@@ -36,10 +36,7 @@ export const ActivityItem = ({ activity }: ActivityItemProps) => {
   const getIcon = useActivityIcon();
   const label = statusLabel[activity.status];
   const color = statusColor[activity.status];
-  const formattedDate = useMemo(
-    () => dateFormatter.format(new Date(activity.createdAt)),
-    [activity.createdAt]
-  );
+  const formattedDate = dateFormatter.format(new Date(activity.createdAt));
 
   return (
     <Box className='grid gap-4 border-b border-slate-100 px-3 py-4 text-slate-700 last:border-b-0 lg:grid-cols-[160px_120px_1fr_200px] lg:items-center lg:gap-6'>
