@@ -39,28 +39,33 @@ export const getActivitiesPage = (
   const userSet = new Set<number>(filters.users);
 
   // 2) Compute local start/end of day for an inclusive range.
-  const startMs = filters.dateRange.start
+  const startOfDayTimestamp = filters.dateRange.start
     ? new Date(filters.dateRange.start).setHours(0, 0, 0, 0)
     : null;
-  const endMs = filters.dateRange.end
+  const endOfDayTimestamp = filters.dateRange.end
     ? new Date(filters.dateRange.end).setHours(23, 59, 59, 999)
     : null;
 
   // 3) Apply active filters.
-  const q = (filters.search ?? '').trim().toLowerCase();
-  const hasQuery = q.length > 0;
+  const searchQuery = (filters.search ?? '').trim().toLowerCase();
+  const hasSearchTerm = searchQuery.length > 0;
 
   const filtered = activities.filter((a) => {
     if (statusSet.size && !statusSet.has(a.status)) return false;
     if (typeSet.size && !typeSet.has(a.type)) return false;
     if (userSet.size && !userSet.has(a.userId)) return false;
-    if (startMs !== null || endMs !== null) {
-      const createdMs = new Date(a.createdAt).getTime();
-      if (startMs !== null && createdMs < startMs) return false;
-      if (endMs !== null && createdMs > endMs) return false;
+    if (startOfDayTimestamp !== null || endOfDayTimestamp !== null) {
+      const createdAtTimestamp = new Date(a.createdAt).getTime();
+      if (
+        startOfDayTimestamp !== null &&
+        createdAtTimestamp < startOfDayTimestamp
+      )
+        return false;
+      if (endOfDayTimestamp !== null && createdAtTimestamp > endOfDayTimestamp)
+        return false;
     }
-    if (hasQuery) {
-      const haystacks: Array<unknown> = [
+    if (hasSearchTerm) {
+      const searchFields: Array<unknown> = [
         a.subject,
         a.description,
         a.supportTicket,
@@ -70,9 +75,9 @@ export const getActivitiesPage = (
         a.user?.name,
       ];
       let matched = false;
-      for (let i = 0; i < haystacks.length; i++) {
-        const v = haystacks[i];
-        if (typeof v === 'string' && v.toLowerCase().includes(q)) {
+      for (let i = 0; i < searchFields.length; i++) {
+        const v = searchFields[i];
+        if (typeof v === 'string' && v.toLowerCase().includes(searchQuery)) {
           matched = true;
           break;
         }
