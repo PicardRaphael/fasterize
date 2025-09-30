@@ -45,3 +45,8 @@ export interface ActivityFilters {
   users: number[];
   dateRange: DateRangeValue;
 }
+
+export interface PaginatedResult<T> {
+  items: T[];
+  totalCount: number;
+}

@@ -20,3 +20,11 @@ export const sameDate = (a: Date | null, b: Date | null) => {
 };
 export const normalizeDate = (value: Date | null) =>
   value ? new Date(value) : null;
+
+export const toStartOfDay = (date: Date): number => {
+  return new Date(date).setHours(0, 0, 0, 0);
+};
+
+export const toEndOfDay = (date: Date): number => {
+  return new Date(date).setHours(23, 59, 59, 999);
+};

@@ -4,7 +4,7 @@
 import { useEffect, useMemo } from 'react';
 import { shallow } from 'zustand/shallow';
 import { useActivityFeedStore } from '../store/context';
-import { getActivitiesPage } from '../../shared/utils/activityFilters';
+import { getActivitiesPage } from '../../shared/utils/activities/getActivitiesPage';
 
 export const useActivityResults = () => {
   const { activities, filters, pagination, setPage, setPerPage } =
