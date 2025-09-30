@@ -1,7 +1,7 @@
 // Utilities to normalize the dataset once (sort + distinct options).
-import type { Activity } from '../types/activity.type';
-import rawActivities from '../../data/activities.json';
-import { collectOptions } from './collectOptionsFilters';
+import type { Activity } from '../../types/activity.type';
+import rawActivities from '../../../data/activities.json';
+import { collectOptions } from '../collectOptionsFilters';
 
 const rawActivityList = rawActivities as Activity[];
 const sortByCreatedAtDesc = (a: Activity, b: Activity) =>

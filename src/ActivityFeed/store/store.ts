@@ -3,7 +3,7 @@ import type { DateRangeValue } from '../../shared/types/activity.type';
 import type { ActivityFeedState } from '../types/types';
 import { normalizeDate, sameDate } from '../../shared/utils/date';
 import { haveSameUsers } from '../../shared/utils/user';
-import { normalizeActivities } from '../../shared/utils/activities';
+import { normalizeActivities } from '../../shared/utils/activities/normalizeActivities';
 
 export const createActivityFeedStore = (): StoreApi<ActivityFeedState> => {
   const { activities, statusOptions, typeOptions, userOptions } =
